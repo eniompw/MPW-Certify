@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Certificate Data Management</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@400;500;600&display=swap');
         
@@ -168,6 +169,73 @@
         .nav-links a:hover {
             text-decoration: underline;
         }
+        
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 32px;
+            }
+            
+            h2 {
+                font-size: 24px;
+            }
+            
+            .search-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-container button {
+                margin-top: 10px;
+                width: 100%;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .button-group button {
+                width: 100%;
+            }
+            
+            table {
+                display: none;
+            }
+
+            .record-card {
+                display: block;
+                background-color: #fff;
+                margin-bottom: 15px;
+                padding: 15px;
+                border-radius: 8px;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            }
+
+            .record-card div {
+                margin-bottom: 10px;
+            }
+
+            .record-card .action-cell {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .record-card .action-button {
+                padding: 10px;
+                font-size: 14px;
+                width: 100%;
+                box-sizing: border-box;
+            }
+        }
     </style>
 </head>
 <body>
@@ -178,15 +246,15 @@
         </div>
 
         <h1>Certificate Data Management</h1>
-        
+
         <div id="statusMessage" class="status-message hidden"></div>
-        
+
         <div class="search-container">
             <input type="text" id="searchInput" class="search-input" placeholder="Search by ID, name, or subject...">
             <button onclick="searchRecords()">Search</button>
             <button onclick="showAddForm()">Add New Record</button>
         </div>
-        
+
         <div id="recordsList">
             <h2>Certificate Records</h2>
             <table id="recordsTable">
@@ -207,57 +275,61 @@
                     <!-- Records will be loaded here -->
                 </tbody>
             </table>
-            
+
+            <div id="recordCards" class="record-cards hidden">
+                <!-- Cards will be dynamically generated here -->
+            </div>
+
             <div class="pagination" id="pagination">
                 <!-- Pagination will be added here -->
             </div>
         </div>
-        
+
         <div id="editForm" class="form-section hidden">
             <h2 id="formTitle">Add New Record</h2>
             <form id="certificateForm">
                 <input type="hidden" id="recordId">
-                
+
                 <div class="form-group">
                     <label for="idInput">ID:</label>
                     <input type="text" id="idInput" required>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="yearInput">Year:</label>
                     <input type="number" id="yearInput" required>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="candidateInput">Candidate:</label>
                     <input type="number" id="candidateInput" required>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="forenameInput">Forename:</label>
                     <input type="text" id="forenameInput" required>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="surnameInput">Surname:</label>
                     <input type="text" id="surnameInput" required>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="subjectInput">Subject:</label>
                     <input type="text" id="subjectInput" required>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="gradeInput">Grade:</label>
                     <input type="text" id="gradeInput" required>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="teacherInput">Teacher:</label>
                     <input type="text" id="teacherInput" required>
                 </div>
-                
+
                 <div class="button-group">
                     <button type="submit" id="saveButton">Save Record</button>
                     <button type="button" class="cancel-button" onclick="hideEditForm()">Cancel</button>
@@ -320,11 +392,12 @@
                     <td>${record.Forename}</td>
                     <td>${record.Surname}</td>
                     <td>${record.Subject}</td>
-                    <td>${record.Grade}</td>                        <td>${record.Teacher}</td>
-                        <td class="action-cell">
-                            <button class="action-button" onclick="editRecord('${record.ID}')">Edit</button>
-                            <button class="action-button" onclick="generateQR('${record.ID}')">QR Code</button>
-                        </td>
+                    <td>${record.Grade}</td>
+                    <td>${record.Teacher}</td>
+                    <td class="action-cell">
+                        <button class="action-button" onclick="editRecord('${record.ID}')">Edit</button>
+                        <button class="action-button" onclick="generateQrCode('${record.ID}')">QR Code</button>
+                    </td>
                 `;
                 tableBody.appendChild(row);
             });
@@ -667,6 +740,211 @@
                 statusMessage.classList.add('hidden');
             }, 5000);
         }
+        
+        // Generate QR code for a record
+        function generateQrCode(id) {
+            // Create a modal to display the QR code
+            const modal = document.createElement('div');
+            modal.style.position = 'fixed';
+            modal.style.top = '0';
+            modal.style.left = '0';
+            modal.style.width = '100%';
+            modal.style.height = '100%';
+            modal.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+            modal.style.display = 'flex';
+            modal.style.justifyContent = 'center';
+            modal.style.alignItems = 'center';
+            modal.style.zIndex = '1000';
+            
+            // Create the content container for the QR code
+            const content = document.createElement('div');
+            content.style.backgroundColor = 'white';
+            content.style.padding = '30px';
+            content.style.borderRadius = '8px';
+            content.style.maxWidth = '400px';
+            content.style.width = '90%';
+            content.style.textAlign = 'center';
+            content.style.position = 'relative';
+            
+            // Add a close button
+            const closeButton = document.createElement('button');
+            closeButton.textContent = '×';
+            closeButton.style.position = 'absolute';
+            closeButton.style.top = '10px';
+            closeButton.style.right = '10px';
+            closeButton.style.border = 'none';
+            closeButton.style.background = 'none';
+            closeButton.style.fontSize = '24px';
+            closeButton.style.cursor = 'pointer';
+            closeButton.onclick = function() {
+                document.body.removeChild(modal);
+            };
+            content.appendChild(closeButton);
+            
+            // Add title
+            const title = document.createElement('h2');
+            title.textContent = 'Certificate QR Code';
+            title.style.color = '#0d4a2e';
+            title.style.marginTop = '0';
+            content.appendChild(title);
+            
+            // Add description
+            const description = document.createElement('p');
+            description.textContent = `Scan this QR code to verify certificate ID: ${id}`;
+            content.appendChild(description);
+            
+            // Add QR code image
+            const qrImage = document.createElement('img');
+            qrImage.src = `/api/qrcode/${id}`;
+            qrImage.style.display = 'block';
+            qrImage.style.margin = '20px auto';
+            qrImage.style.maxWidth = '100%';
+            qrImage.style.height = 'auto';
+            content.appendChild(qrImage);
+            
+            // Add download button
+            const downloadButton = document.createElement('button');
+            downloadButton.textContent = 'Download QR Code';
+            downloadButton.className = 'action-button';
+            downloadButton.style.marginTop = '20px';
+            downloadButton.onclick = function() {
+                // Create a temporary link and click it to download the image
+                const link = document.createElement('a');
+                link.href = `/api/qrcode/${id}`;
+                link.download = `certificate-qr-${id}.png`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            };
+            content.appendChild(downloadButton);
+            
+            // Add URL display with copy button
+            const urlContainer = document.createElement('div');
+            urlContainer.style.marginTop = '20px';
+            urlContainer.style.padding = '10px';
+            urlContainer.style.backgroundColor = '#f5f5f5';
+            urlContainer.style.borderRadius = '4px';
+            urlContainer.style.fontSize = '14px';
+            urlContainer.style.wordBreak = 'break-all';
+            urlContainer.style.textAlign = 'left';
+            
+            // Get the base URL from current location
+            const baseUrl = window.location.origin;
+            const certificateUrl = `${baseUrl}/?q=${id}`;
+            
+            // Display the URL
+            const urlText = document.createElement('div');
+            urlText.textContent = certificateUrl;
+            urlText.style.marginBottom = '10px';
+            urlContainer.appendChild(urlText);
+            
+            // Add copy button
+            const copyButton = document.createElement('button');
+            copyButton.textContent = 'Copy URL';
+            copyButton.className = 'action-button';
+            copyButton.onclick = function() {
+                navigator.clipboard.writeText(certificateUrl).then(function() {
+                    copyButton.textContent = 'Copied!';
+                    setTimeout(function() {
+                        copyButton.textContent = 'Copy URL';
+                    }, 2000);
+                }).catch(function(err) {
+                    console.error('Could not copy text: ', err);
+                });
+            };
+            urlContainer.appendChild(copyButton);
+            
+            content.appendChild(urlContainer);
+            
+            // Append the content to the modal
+            modal.appendChild(content);
+            
+            // Append the modal to the body
+            document.body.appendChild(modal);
+            
+            // Close modal when clicking outside of content
+            modal.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    document.body.removeChild(modal);
+                }
+            });
+        }
+
+        // Function to display records as cards on mobile
+        function displayRecordsAsCards(records) {
+            const recordCards = document.getElementById('recordCards');
+            recordCards.innerHTML = '';
+
+            if (records.length === 0) {
+                recordCards.innerHTML = '<div style="text-align: center;">No records found</div>';
+                return;
+            }
+
+            records.forEach(record => {
+                const card = document.createElement('div');
+                card.className = 'record-card';
+                card.innerHTML = `
+                    <div><strong>ID:</strong> ${record.ID}</div>
+                    <div><strong>Year:</strong> ${record.Year}</div>
+                    <div><strong>Candidate:</strong> ${record.Candidate}</div>
+                    <div><strong>Forename:</strong> ${record.Forename}</div>
+                    <div><strong>Surname:</strong> ${record.Surname}</div>
+                    <div><strong>Subject:</strong> ${record.Subject}</div>
+                    <div><strong>Grade:</strong> ${record.Grade}</div>
+                    <div><strong>Teacher:</strong> ${record.Teacher}</div>
+                    <div class="action-cell">
+                        <button class="action-button" onclick="editRecord('${record.ID}')">Edit</button>
+                        <button class="action-button" onclick="generateQrCode('${record.ID}')">QR Code</button>
+                    </div>
+                `;
+                recordCards.appendChild(card);
+            });
+        }
+
+        // Modify displayRecords to handle both table and card views
+        function displayRecords(records) {
+            const isMobile = window.innerWidth <= 768;
+            const tableBody = document.getElementById('recordsBody');
+            const recordCards = document.getElementById('recordCards');
+
+            if (isMobile) {
+                tableBody.parentElement.classList.add('hidden');
+                recordCards.classList.remove('hidden');
+                displayRecordsAsCards(records);
+            } else {
+                tableBody.parentElement.classList.remove('hidden');
+                recordCards.classList.add('hidden');
+
+                tableBody.innerHTML = '';
+
+                if (records.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="9" style="text-align: center;">No records found</td></tr>';
+                    return;
+                }
+
+                records.forEach(record => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${record.ID}</td>
+                        <td>${record.Year}</td>
+                        <td>${record.Candidate}</td>
+                        <td>${record.Forename}</td>
+                        <td>${record.Surname}</td>
+                        <td>${record.Subject}</td>
+                        <td>${record.Grade}</td>
+                        <td>${record.Teacher}</td>
+                        <td class="action-cell">
+                            <button class="action-button" onclick="editRecord('${record.ID}')">Edit</button>
+                            <button class="action-button" onclick="generateQrCode('${record.ID}')">QR Code</button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            }
+        }
+
+        // Re-render records on window resize
+        window.addEventListener('resize', () => displayRecords(allRecords));
     </script>
 </body>
 </html>
