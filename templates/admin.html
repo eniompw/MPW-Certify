@@ -680,7 +680,11 @@
             
             // Display the URL
             const urlText = document.createElement('div');
-            urlText.textContent = certificateUrl;
+            const urlLink = document.createElement('a');
+            urlLink.href = certificateUrl;
+            urlLink.textContent = certificateUrl;
+            urlLink.target = '_blank'; // Open in a new tab
+            urlText.appendChild(urlLink);
             urlText.style.marginBottom = '10px';
             urlContainer.appendChild(urlText);
             
@@ -834,7 +838,11 @@
             
             // Display the URL
             const urlText = document.createElement('div');
-            urlText.textContent = certificateUrl;
+            const urlLink = document.createElement('a');
+            urlLink.href = certificateUrl;
+            urlLink.textContent = certificateUrl;
+            urlLink.target = '_blank'; // Open in a new tab
+            urlText.appendChild(urlLink);
             urlText.style.marginBottom = '10px';
             urlContainer.appendChild(urlText);
             
