@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Certificate Verification</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@400;500;600&display=swap');
+        
+        body {
+            font-family: 'Montserrat', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333<body>
+    <div class="container">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <a href="/admin" style="color: #0d4a2e; text-decoration: none; font-weight: 500;">Admin Panel</a>
+        </div>
+        <h1>Certificate Verification</h1>       }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            font-family: 'Cormorant Garamond', serif;
+            color: #0d4a2e;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 700;
+            font-size: 42px;
+        }
+        .search-container {
+            margin: 20px auto;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            max-width: 600px;
+        }
+        .search-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .search-input {
+            flex-grow: 1;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .search-button {
+            padding: 10px 20px;
+            background-color: #0d4a2e;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-family: 'Montserrat', sans-serif;
+            transition: background-color 0.3s;
+        }
+        .search-button:hover {
+            background-color: #116b42;
+        }
+        .result-card {
+            display: none;
+            max-width: 850px;
+            margin: 30px auto;
+            background-color: #fff;
+            border: 2px solid #0d4a2e;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            position: relative;
+            padding: 40px;
+            text-align: center;
+            font-family: 'Cormorant Garamond', serif;
+            background-image: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.95) 100%);
+            background-size: cover;
+            overflow: hidden;
+        }
+        
+        .result-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%230d4a2e' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+            z-index: 0;
+            opacity: 0.8;
+        }
+        
+        .result-card::after {
+            content: '';
+            position: absolute;
+            top: -50px;
+            left: -50px;
+            width: 200px;
+            height: 200px;
+            background-image: url("data:image/svg+xml,%3Csvg width='52' height='26' viewBox='0 0 52 26' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4af37' fill-opacity='0.15'%3E%3Cpath d='M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6zm25.464-1.95l8.486 8.486-1.414 1.414-8.486-8.486 1.414-1.414z' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.7;
+            z-index: 0;
+            border-radius: 50%;
+        }
+        .data-container {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            font-style: italic;
+        }
+        .error {
+            color: #d32f2f;
+            padding: 10px;
+            background-color: #ffeeee;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .certificate-header {
+            font-family: 'Cormorant Garamond', serif;
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        .certificate-title {
+            color: #0d4a2e;
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            border-bottom: 2px solid #0d4a2e;
+            display: inline-block;
+            padding: 0 20px 5px;
+            position: relative;
+            z-index: 2;
+        }
+        .certificate-subtitle {
+            font-size: 28px;
+            color: #333;
+            margin: 10px 0 30px;
+            position: relative;
+            z-index: 2;
+        }
+        .verified-mark {
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            color: #0d4a2e;
+            font-size: 16px;
+            font-weight: 500;
+            border: 1px solid #0d4a2e;
+            padding: 5px 15px;
+            border-radius: 4px;
+            transform: rotate(-5deg);
+            z-index: 2;
+        }
+        
+        .decorative-border {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            bottom: 15px;
+            border: 2px solid rgba(13, 74, 46, 0.3);
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .border-corner {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-color: #0d4a2e;
+            border-style: solid;
+            border-width: 0;
+            z-index: 1;
+        }
+        
+        .border-corner-tl {
+            top: -5px;
+            left: -5px;
+            border-top-width: 2px;
+            border-left-width: 2px;
+        }
+        
+        .border-corner-tr {
+            top: -5px;
+            right: -5px;
+            border-top-width: 2px;
+            border-right-width: 2px;
+        }
+        
+        .border-corner-bl {
+            bottom: -5px;
+            left: -5px;
+            border-bottom-width: 2px;
+            border-left-width: 2px;
+        }
+        
+        .border-corner-br {
+            bottom: -5px;
+            right: -5px;
+            border-bottom-width: 2px;
+            border-right-width: 2px;
+        }
+        .data-container {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            font-style: italic;
+        }
+        .error {
+            color: #d32f2f;
+            padding: 10px;
+            background-color: #ffeeee;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .certificate-header {
+            font-family: 'Cormorant Garamond', serif;
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        .certificate-title {
+            color: #0d4a2e;
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            border-bottom: 2px solid #0d4a2e;
+            display: inline-block;
+            padding: 0 20px 5px;
+            position: relative;
+            z-index: 2;
+        }
+        .certificate-subtitle {
+            font-size: 28px;
+            color: #333;
+            margin: 10px 0 30px;
+            position: relative;
+            z-index: 2;
+        }
+        .verified-mark {
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            color: #0d4a2e;
+            font-size: 16px;
+            font-weight: 500;
+            border: 1px solid #0d4a2e;
+            padding: 5px 15px;
+            border-radius: 4px;
+            transform: rotate(-5deg);
+            z-index: 2;
+        }
+        
+        .decorative-border {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            bottom: 15px;
+            border: 2px solid rgba(13, 74, 46, 0.3);
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .border-corner {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-color: #0d4a2e;
+            border-style: solid;
+            border-width: 0;
+            z-index: 1;
+        }
+        
+        .border-corner-tl {
+            top: -5px;
+            left: -5px;
+            border-top-width: 2px;
+            border-left-width: 2px;
+        }
+        
+        .border-corner-tr {
+            top: -5px;
+            right: -5px;
+            border-top-width: 2px;
+            border-right-width: 2px;
+        }
+        
+        .border-corner-bl {
+            bottom: -5px;
+            left: -5px;
+            border-bottom-width: 2px;
+            border-left-width: 2px;
+        }
+        
+        .border-corner-br {
+            bottom: -5px;
+            right: -5px;
+            border-bottom-width: 2px;
+            border-right-width: 2px;
+        }
+        .certificate-name {
+            font-size: 36px;
+            margin: 30px 0;
+            font-weight: 600;
+            color: #0d4a2e;
+            position: relative;
+            z-index: 2;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .certificate-statement {
+            font-size: 24px;
+            margin: 25px 0;
+            line-height: 1.5;
+            position: relative;
+            z-index: 2;
+            color: #333;
+        }
+        .certificate-detail {
+            font-size: 22px;
+            margin: 15px 0;
+            text-align: center;
+            display: block;
+            position: relative;
+            z-index: 2;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.7);
+            width: 70%;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 4px;
+        }
+        .certificate-detail strong {
+            color: #0d4a2e;
+            font-weight: 600;
+        }
+        .certificate-footer {
+            margin-top: 40px;
+            border-top: 1px solid #ccc;
+            padding-top: 20px;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+        .certificate-date {
+            font-size: 18px;
+            font-style: italic;
+            margin: 10px 0;
+            color: #555;
+            text-align: left;
+        }
+        .certificate-logo {
+            text-align: right;
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            z-index: 2;
+        }
+        .logo-image {
+            max-height: 60px;
+            max-width: 150px;
+            object-fit: contain;
+        }
+        .signature {
+            margin-top: 30px;
+            font-style: italic;
+            font-size: 18px;
+            text-align: right;
+            position: relative;
+        }
+        .signature::before {
+            content: '';
+            position: absolute;
+            top: -40px;
+            right: 40px;
+            width: 150px;
+            height: 40px;
+            background-image: url("data:image/svg+xml,%3Csvg width='150' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10,20 Q30,5 50,25 T90,15 T130,25' stroke='%23333' fill='transparent' stroke-width='1.5'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Certificate Verification Portal</h1>
+        
+        <div class="search-container">
+            <h2>Verify Certificate Authenticity</h2>
+            <div class="search-form">
+                <input type="text" id="id-search" class="search-input" placeholder="Enter Certificate ID (e.g., 20250001)">
+                <button id="search-button" class="search-button">Verify</button>
+            </div>
+            <div id="search-error" class="error" style="display: none;"></div>
+        </div>
+        
+        <div id="result-card" class="result-card">
+            <!-- Certificate will be displayed here -->
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // ID lookup functionality
+            const searchButton = document.getElementById('search-button');
+            const idInput = document.getElementById('id-search');
+            const resultCard = document.getElementById('result-card');
+            const searchError = document.getElementById('search-error');
+            
+            // Check for ID in URL parameters when page loads
+            const urlParams = new URLSearchParams(window.location.search);
+            const idFromUrl = urlParams.get('q');
+            if (idFromUrl) {
+                idInput.value = idFromUrl;
+                performSearch();
+            }
+            
+            searchButton.addEventListener('click', performSearch);
+            idInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
+            
+            function performSearch() {
+                const id = idInput.value.trim();
+                
+                if (!id) {
+                    searchError.textContent = 'Please enter an ID to search';
+                    searchError.style.display = 'block';
+                    resultCard.style.display = 'none';
+                    return;
+                }
+                
+                searchError.style.display = 'none';
+                resultCard.innerHTML = 'Searching...';
+                resultCard.style.display = 'block';
+                
+                fetch(`/lookup?q=${encodeURIComponent(id)}`)
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.status === 'error' || result.status === 'not_found') {
+                            searchError.textContent = result.message;
+                            searchError.style.display = 'block';
+                            resultCard.style.display = 'none';
+                            return;
+                        }
+                        
+                        // Create a certificate-like display
+                        const fullName = `${result.data.Forename} ${result.data.Surname}`;
+                        const subject = result.data.Subject;
+                        const grade = result.data.Grade;
+                        const year = result.data.Year;
+                        const id = result.data.ID;
+                        const teacher = result.data.Teacher || 'Unknown';
+
+                        // Format the current date
+                        const currentDate = new Date();
+                        const formattedDate = new Intl.DateTimeFormat('en-US', { 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric' 
+                        }).format(currentDate);
+
+                        let html = `
+                            <div class="certificate-header">
+                                <div class="verified-mark">VERIFIED</div>
+                                <div class="certificate-logo"><img src="https://www.mpw.ac.uk/wp-content/themes/mpw/assets/src/img/logo.png" alt="UFPX Logo" class="logo-image"></div>
+                                <div class="certificate-title">Certificate</div>
+                            </div>
+                            
+                            <div class="certificate-subtitle">This is to certify that</div>
+                            
+                            <div class="certificate-name">${fullName}</div>
+                            
+                            <div class="certificate-statement">
+                                has been awarded
+                            </div>
+                            
+                            <div class="certificate-detail">
+                                <strong>${grade}</strong>
+                            </div>
+                            
+                            <div class="certificate-statement">
+                                in
+                            </div>
+                            
+                            <div class="certificate-detail">
+                                <strong>${subject}</strong>
+                            </div>
+                            
+                            <div class="certificate-footer">
+                                <div class="certificate-date">
+                                    Valid Certificate ID: ${id} • Issued: ${formattedDate}
+                                </div>
+                                <div class="signature">
+                                    ${teacher}<br>
+                                    Professor
+                                </div>
+                            </div>
+                        `;
+
+                        resultCard.innerHTML = html;
+                        resultCard.style.display = 'block';
+                    })
+                    .catch(error => {
+                        searchError.textContent = 'Error searching: ' + error.message;
+                        searchError.style.display = 'block';
+                        resultCard.style.display = 'none';
+                    });
+            }
+        });
+    </script>
+</body>
+</html>
