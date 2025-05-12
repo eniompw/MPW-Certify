@@ -3,13 +3,33 @@ import pandas as pd
 import os
 import qrcode
 from io import BytesIO
+import shutil
 
 app = Flask(__name__)
+
+def get_excel_path():
+    """Get the path to the Excel file, ensuring it exists in /tmp for Vercel"""
+    # On Vercel, use /tmp directory which is writable
+    if os.environ.get('VERCEL', '0') == '1':
+        excel_dir = '/tmp'
+    else:
+        # In local development, use the current directory
+        excel_dir = os.path.dirname(__file__)
+    
+    excel_path = os.path.join(excel_dir, 'UFP Certificates.xlsx')
+    
+    # If we're on Vercel and the file doesn't exist in /tmp yet, copy it there
+    if os.environ.get('VERCEL', '0') == '1' and not os.path.exists(excel_path):
+        # Copy the file from the source directory to /tmp
+        source_path = os.path.join(os.path.dirname(__file__), 'UFP Certificates.xlsx')
+        shutil.copy2(source_path, excel_path)
+    
+    return excel_path
 
 def extract_excel_data():
     """Extract data from the Excel file and return as a dictionary"""
     try:
-        excel_path = os.path.join(os.path.dirname(__file__), 'UFP Certificates.xlsx')
+        excel_path = get_excel_path()
         # Read the Excel file
         df = pd.read_excel(excel_path)
         
@@ -23,7 +43,7 @@ def extract_excel_data():
 def save_excel_data(data):
     """Save data to the Excel file"""
     try:
-        excel_path = os.path.join(os.path.dirname(__file__), 'UFP Certificates.xlsx')
+        excel_path = get_excel_path()
         df = pd.DataFrame(data)
         df.to_excel(excel_path, index=False)
         return {'status': 'success'}
@@ -56,7 +76,7 @@ def lookup_by_id():
             return jsonify({'status': 'error', 'message': 'No ID provided. Use ?q=ID in your query.'})
         
         # Load Excel data
-        excel_path = os.path.join(os.path.dirname(__file__), 'UFP Certificates.xlsx')
+        excel_path = get_excel_path()
         df = pd.read_excel(excel_path)
         
         # Convert ID to same type for comparison (handle string/int cases)

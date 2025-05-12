@@ -1,4 +1,4 @@
-# MPW-Certify
+## MPW-Certify
 
 A web application for verifying certificate authenticity by using QR codes that link to a central database. This application allows users to quickly validate the legitimacy of UFP (Universal Fraud Prevention) certificates by scanning a QR code or entering a certificate ID.
 
@@ -8,6 +8,7 @@ A web application for verifying certificate authenticity by using QR codes that 
 - Displays detailed certificate information
 - Responsive web interface
 - Excel-based database integration
+- Vercel deployment ready
 
 ## Technology Stack
 
@@ -19,6 +20,8 @@ A web application for verifying certificate authenticity by using QR codes that 
   - pandas
   - openpyxl
   - python-dotenv
+  - qrcode
+  - pillow
 
 ## Getting Started
 
@@ -54,11 +57,15 @@ A web application for verifying certificate authenticity by using QR codes that 
    http://127.0.0.1:5000
    ```
 
-## Usage
+## Vercel Deployment
 
-1. Enter a certificate ID in the search box
-2. Click the "Search" button or press Enter
-3. View the certificate details if it exists in the database
+This application is configured to work with Vercel deployment. When deployed on Vercel:
+
+1. The Excel file will be stored in the `/tmp` directory, which is writable on Vercel
+2. Any changes made to the data will persist for the duration of the serverless function execution
+3. The `VERCEL` environment variable is set to identify when running in the Vercel environment
+
+Note that since Vercel uses serverless functions with ephemeral file systems, data changes will not persist permanently between different function invocations. For a production environment, consider using a more persistent storage solution like a database.
 
 ## Project Structure
 
