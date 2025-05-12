@@ -290,44 +290,41 @@
             <form id="certificateForm">
                 <input type="hidden" id="recordId">
 
-                <div class="form-group">
-                    <label for="idInput">ID:</label>
-                    <input type="text" id="idInput" required>
-                </div>
+                <input type="hidden" id="idInput">
 
                 <div class="form-group">
                     <label for="yearInput">Year:</label>
-                    <input type="number" id="yearInput" required>
+                    <input type="number" id="yearInput" required min="2000" max="2100" placeholder="Enter year (e.g., 2025)">
                 </div>
 
                 <div class="form-group">
                     <label for="candidateInput">Candidate:</label>
-                    <input type="number" id="candidateInput" required>
+                    <input type="number" id="candidateInput" required min="1" placeholder="Enter candidate number (e.g., 1)">
                 </div>
 
                 <div class="form-group">
                     <label for="forenameInput">Forename:</label>
-                    <input type="text" id="forenameInput" required>
+                    <input type="text" id="forenameInput" required placeholder="Enter first name">
                 </div>
 
                 <div class="form-group">
                     <label for="surnameInput">Surname:</label>
-                    <input type="text" id="surnameInput" required>
+                    <input type="text" id="surnameInput" required placeholder="Enter last name">
                 </div>
 
                 <div class="form-group">
                     <label for="subjectInput">Subject:</label>
-                    <input type="text" id="subjectInput" required>
+                    <input type="text" id="subjectInput" required placeholder="Enter subject (e.g., Mathematics)">
                 </div>
 
                 <div class="form-group">
                     <label for="gradeInput">Grade:</label>
-                    <input type="text" id="gradeInput" required>
+                    <input type="text" id="gradeInput" required placeholder="Enter grade (e.g., A, B+, Pass)">
                 </div>
 
                 <div class="form-group">
                     <label for="teacherInput">Teacher:</label>
-                    <input type="text" id="teacherInput" required>
+                    <input type="text" id="teacherInput" required placeholder="Enter teacher name">
                 </div>
 
                 <div class="button-group">
@@ -490,7 +487,6 @@
             document.getElementById('gradeInput').value = record.Grade;
             document.getElementById('teacherInput').value = record.Teacher || '';
             
-            document.getElementById('idInput').readOnly = true;
             document.getElementById('deleteButton').classList.remove('hidden');
             
             showEditForm();
@@ -502,7 +498,9 @@
             document.getElementById('formTitle').textContent = 'Add New Record';
             document.getElementById('certificateForm').reset();
             document.getElementById('recordId').value = '';
-            document.getElementById('idInput').readOnly = false;
+            // Set default year to current year
+            const currentYear = new Date().getFullYear();
+            document.getElementById('yearInput').value = currentYear;
             document.getElementById('deleteButton').classList.add('hidden');
             
             showEditForm();
@@ -525,7 +523,6 @@
             event.preventDefault();
             
             const formData = {
-                ID: document.getElementById('idInput').value,
                 Year: parseInt(document.getElementById('yearInput').value),
                 Candidate: parseInt(document.getElementById('candidateInput').value),
                 Forename: document.getElementById('forenameInput').value,
@@ -535,7 +532,8 @@
                 Teacher: document.getElementById('teacherInput').value
             };
             
-            const endpoint = editMode ? `/api/records/${formData.ID}` : '/api/records';
+            const recordId = document.getElementById('recordId').value;
+            const endpoint = editMode ? `/api/records/${recordId}` : '/api/records';
             const method = editMode ? 'PUT' : 'POST';
             
             fetch(endpoint, {
@@ -548,7 +546,11 @@
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
-                    showStatus(editMode ? 'Record updated successfully!' : 'Record added successfully!', true);
+                    let successMessage = editMode ? 'Record updated successfully!' : 'Record added successfully!';
+                    if (data.id) {
+                        successMessage += ` ID: ${data.id}`;
+                    }
+                    showStatus(successMessage, true);
                     fetchAllRecords();
                     hideEditForm();
                 } else {

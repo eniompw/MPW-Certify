@@ -30,6 +30,13 @@ def save_excel_data(data):
     except Exception as e:
         return {'status': 'error', 'message': str(e)}
 
+def generate_id(year, candidate_num):
+    """Generate ID by concatenating year and 4-digit candidate number"""
+    # Convert candidate_num to 4-digit string with leading zeros
+    candidate_str = str(candidate_num).zfill(4)
+    # Concatenate year and candidate number
+    return f"{year}{candidate_str}"
+
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -92,10 +99,22 @@ def add_record():
         
         data = result['data']
         
+        # Check if Year and Candidate fields are provided
+        if 'Year' not in new_record or 'Candidate' not in new_record:
+            return jsonify({'status': 'error', 'message': 'Year and Candidate fields are required'})
+        
+        # Generate ID from Year and Candidate
+        year = new_record['Year']
+        candidate = int(new_record['Candidate'])  # Ensure it's an integer
+        generated_id = generate_id(year, candidate)
+        
+        # Set the ID in the new record
+        new_record['ID'] = generated_id
+        
         # Check if ID already exists
         for record in data:
-            if str(record['ID']) == str(new_record['ID']):
-                return jsonify({'status': 'error', 'message': f"Record with ID {new_record['ID']} already exists"})
+            if str(record['ID']) == str(generated_id):
+                return jsonify({'status': 'error', 'message': f"Record with ID {generated_id} already exists"})
         
         # Add new record
         data.append(new_record)
@@ -105,7 +124,7 @@ def add_record():
         if save_result['status'] == 'error':
             return jsonify(save_result)
         
-        return jsonify({'status': 'success', 'message': 'Record added successfully'})
+        return jsonify({'status': 'success', 'message': 'Record added successfully', 'id': generated_id})
     
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)})
@@ -124,6 +143,12 @@ def update_record(record_id):
         
         data = result['data']
         
+        # If Year and Candidate are being updated, regenerate the ID
+        if 'Year' in updated_record and 'Candidate' in updated_record:
+            year = updated_record['Year']
+            candidate = int(updated_record['Candidate'])
+            updated_record['ID'] = generate_id(year, candidate)
+        
         # Find and update record
         record_found = False
         for i, record in enumerate(data):
@@ -140,7 +165,7 @@ def update_record(record_id):
         if save_result['status'] == 'error':
             return jsonify(save_result)
         
-        return jsonify({'status': 'success', 'message': 'Record updated successfully'})
+        return jsonify({'status': 'success', 'message': 'Record updated successfully', 'id': updated_record['ID']})
     
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)})
